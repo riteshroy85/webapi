@@ -28,18 +28,14 @@ namespace Weather.WebApi.App_Start
 
         private static IContainer RegisterServices(ContainerBuilder builder)
         {
-            builder.RegisterAssemblyModules(Assembly.GetExecutingAssembly());
-
             //Register your Web API controllers.  
-            builder.RegisterApiControllers(typeof(WebApiApplication).Assembly);
-            
-            var webApiResolver = new AutofacWebApiDependencyResolver(Container);
-            GlobalConfiguration.Configuration.DependencyResolver = webApiResolver;
-            
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+                        
             builder.RegisterType<WeatherService>().As<IWeatherService>();
-            builder.RegisterType<GlobalWeather.GlobalWeatherSoapClient>().AsImplementedInterfaces().AsSelf();
-            builder.RegisterType<HttpClient>().SingleInstance();
-            
+            builder.RegisterType<GlobalWeather.GlobalWeatherSoapClient>().AsSelf();
+           // builder.RegisterType<HttpClient>().SingleInstance();
+
+            Container = builder.Build();
 
             return Container;
         }

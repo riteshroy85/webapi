@@ -24,12 +24,12 @@ namespace Weather.WebApi.Service
             try
             {
                 //return null;
-                //GlobalWeather.GlobalWeatherSoapClient obj = new GlobalWeather.GlobalWeatherSoapClient();
-                var response = _weatherclient.GetCitiesByCountry(country);
+                GlobalWeather.GlobalWeatherSoapClient obj = new GlobalWeather.GlobalWeatherSoapClient();
+                var response = obj.GetCitiesByCountry(country);
 
                 var xmlDoc = XDocument.Parse(response);
-                IEnumerable<string> result = from node in xmlDoc.Root.Descendants()
-                                             select node.Attribute("City").Value;
+                IEnumerable<string> result = from node in xmlDoc.Root.Descendants("City")
+                                             select node.Value;
 
                 return result.ToList();
             }
@@ -55,7 +55,7 @@ namespace Weather.WebApi.Service
                     {
                         Location = rawWeather.Name,
                         Temperature = rawWeather.Main.Temp + " Degree Centigrade",
-                        Time = DateTime.Now.ToShortDateString(),
+                        Time = DateTime.Now.ToLocalTime().ToString(),
                         Visibility = rawWeather.Visibility + " miles per hour",
                         Summary = string.Join(",", rawWeather.Weather.Select(x => x.Main))
                     };
